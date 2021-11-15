@@ -4,6 +4,7 @@
 #include <math.h>
 #include <iomanip>
 #include <fstream>
+#include <bits/stdc++.h>
 using namespace std;
 
 // class bankCredit
@@ -170,6 +171,7 @@ public:
 
         while (ptr != NULL)
         {
+
             if (ptr->account_Number == acno)
             {
                 temp = ptr;
@@ -387,6 +389,7 @@ public:
                 temp->balance = temp->balance + principal;
                 temp->loanRecieveBOX = temp->loanRecieveBOX + principal;
                 cout << "CONGRATULATIONS " << temp->name << "HOME LOAN has been CREDIT into your account :)";
+                MessageBox(0, "Loan has been approved and added into your credit", "CONGRATULATIONS", MB_OK);
             }
             else
             {
@@ -620,24 +623,24 @@ public:
 
                     total_given = (total * 80) / 100;
 
-                    cout << "\nTotal amount of loan bank can lend to " << temp->name << " RUPEES ";
+                    cout << "\nTotal amount of loan bank can lend to " << temp->name << total_given << " RUPEES ";
                     cout << "\nAre you sure you want to avail loan?? [y/n]" << endl;
                     cin >> yn;
                     if (yn == 'y')
                     {
                         cout << "Enter your UNIVERSITY roll no" << endl;
                         cin >> roll_no;
-                        cout << "Confirm and re-write your university roll number" << endl;
 
-                        cin >> confirm_roll_no;
                         int i = 3;
                         while (i > 0)
                         {
+                            cout << "\nRe-write your university roll number" << endl;
+                            cin >> confirm_roll_no;
                             if (roll_no == confirm_roll_no)
                             {
                                 ofstream out("UniversityAccount1.txt");
                                 int sem;
-                                cout << "\nEnter total number of semisters " << endl;
+                                // cout << "\nEnter total number of semisters " << endl;
                                 out << total_given << "\n";
                                 out << roll_no;
 
@@ -659,18 +662,11 @@ public:
                 }
                 else
                 {
-                    cout << temp->name << " isnt eligible for get minimum %age of loan as he is under 18\n"
-                         << temp->name << " could get 50% of its total tuition fees" << endl;
-                    cout << "\nEnter income according to income certificate" << endl;
-                    cin >> income;
-                    cout << "\nTotal semister in course" << endl;
-                    cin >> sem;
-                    cout << "\n Total fee of course :" << endl;
-                    cin >> total;
+                    cout << temp->name << " could get 50% of its total tuition fees = " << total / 50 << endl;
 
-                    total_given = (total * 50) / 100;
+                    total_given = ((total / 50) * 50) / 100;
 
-                    cout << "\nTotal amount of loan bank can lend to " << temp->name << " RUPEES ";
+                    cout << "\nTotal amount of loan bank can lend to " << temp->name << total / 50 << " RUPEES ";
                     cout << "\nAre you sure you want to avail loan?? [y/n]" << endl;
                     cin >> yn;
                     if (yn == 'y')
@@ -688,6 +684,7 @@ public:
                                 ofstream out("UniversityAccount1.txt");
                                 int sem;
                                 cout << "\nEnter total number of semisters " << endl;
+                                cin >> sem;
                                 out << total_given << "\n";
                                 out << roll_no;
 
@@ -769,6 +766,77 @@ public:
             }
         }
     }
+    //---------------------------------------------------------------------------------------------------FIXED LOAN BALANCE------------------------------------------------------------------------------------------
+
+    void fixedDepositBalance(int acno, string pass)
+
+    {
+        system("CLS");
+        node *ptr = head;
+        node *temp = NULL;
+
+        while (ptr != NULL)
+        {
+
+            if (ptr->account_Number == acno)
+            {
+                temp = ptr;
+            }
+
+            ptr = ptr->next;
+        }
+
+        if (temp->password != pass)
+        {
+            cout << "Wrong password";
+        }
+        else if (temp->account_Number != acno)
+        {
+            cout << "Wrong account number";
+        }
+        else
+        {
+            int timeA, timeB;
+            long double difference;
+            char yn;
+
+            timeA = time(NULL);
+            cout << "Checking time difference [y/n]" << endl;
+            cin >> yn;
+            if (yn == 'y')
+            {
+                timeB = time(NULL);
+                difference = abs(timeA - timeB);
+                cout << difference;
+            }
+            // long double difference;
+
+            long double years;
+            // if (difference < 604800)
+            // {
+            //     cout << "Sorry ! YOU WILL NOT GET ANY INTEREST BEFORE 7 DAYS OF DEPOSIT . \n DO YOU WANT TO BREAK YOUR FIXED DEPOSITED MONEY? [y/n]" << endl;
+            // }
+            // else
+            {
+
+                years = difference / 31536000;
+                cout << fixed << setprecision(10) << years << endl;
+            }
+
+            double principal, I = 10;
+            principal = temp->fixedDeposite;
+
+            double a;
+            double internal;
+            internal = pow((1 + (I / 100)), years);
+            // cout << "INTERNAL=";
+            // cout << internal;
+            // cout << endl;
+            a = principal * internal;
+            cout << "Current amount : " << a;
+        }
+    }
+
     // -------------------------------------------------------------------------------------------------LOAN DEPOSIT SECTION-----------------------------------------------------------------------------------------
     void depositeGoldLoan(int acno, string pass)
     {
@@ -838,7 +906,7 @@ public:
                 if (temp->balance < pay)
                 {
                     // cout << "\nInsufficent bank balance :(" << endl;
-                     MessageBox(0, "INSUFFICENT BANK BALANCE", "X", MB_OK);
+                    MessageBox(0, "INSUFFICENT BANK BALANCE", "X", MB_OK);
                 }
                 else
                 {
@@ -895,8 +963,9 @@ int main()
 
             case 1:
                 system("CLS");
-                cout << "Enter unique 4 digit account number" << endl;
-                cin >> acno;
+                srand(time(NULL));
+                acno = rand() % 9000 + 1000;
+                cout << "Account is : " << acno << endl;
                 cout << "Enter a unique password" << endl;
                 cin >> pass;
                 cout << "Enter Account holders name" << endl;
@@ -1164,6 +1233,17 @@ int main()
                 cout << "Enter your password" << endl;
                 cin >> pass;
                 b.fixedDeposit(acno, pass);
+                break;
+
+            case 9:
+                system("CLS");
+                cout << "\n--------------------------FIXED DEPOSITE BALANCE----------------------------";
+                cout << "Enter your account number" << endl;
+                cin >> acno;
+                cout << "Enter your password" << endl;
+                cin >> pass;
+                b.fixedDepositBalance(acno, pass);
+                break;
             }
         }
     } while (option != 0);
